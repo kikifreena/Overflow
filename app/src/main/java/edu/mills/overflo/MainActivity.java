@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int sideSize = 4;
     private static int size;
     private static TextView[] textViews;
+    private static Grid g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,62 +23,70 @@ public class MainActivity extends AppCompatActivity {
         size = sideSize * sideSize;
         gridLayout.setColumnCount(sideSize);
         textViews = new TextView[size];
-        for (int i = 0; i < size; i++) {
+        g = new Grid(sideSize);
+        for (final Square s : g.getSquares()) {
+            int i = s.getId();
             textViews[i] = new TextView(this);
-            textViews[i].setText(R.string.x);
+            textViews[i].setText(Integer.toString(s.getValue()));
             textViews[i].setTextSize(100);
             textViews[i].setPadding(10, 10, 10, 10);
             textViews[i].setId(i);
-            gridLayout.addView(textViews[i]);
-        }
-        for (final TextView textView : textViews) {
-            textView.setOnClickListener(new View.OnClickListener() {
+            textViews[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setAllValues(textView);
-                }
+                    g.increment(s, g.findNeighbors(s), new ArrayList<Square>(), new ArrayList<Square>());
+                    drawGrid();
+                };
             });
+            gridLayout.addView(textViews[i]);
         }
     }
 
-    private void setAllValues(TextView textView) {
-        setNextValue(textView, textView.getText().toString());
-    }
-
-    private void setNextValue(TextView textView, String current) {
-        if (current.equals("1")) {
-            textView.setText("2");
-        } else if (current.equals("2")) {
-            textView.setText("3");
-        } else if (current.equals("3")) {
-            textView.setText("1");
-            ArrayList<Integer> neighbors = findNeighbors(textView.getId());
-            System.out.println(neighbors);
-            for (int n : neighbors) {
-                System.out.println(textViews[n].getText().toString());
-                setNextValue(textViews[n], textViews[n].getText().toString());
-            }
+    private void drawGrid(){
+        for (final Square s : g.getSquares()) {
+            int i = s.getId();
+            textViews[i].setText(Integer.toString(s.getValue()));
         }
     }
 
-    private ArrayList<Integer> findNeighbors(int current) {
-        ArrayList<Integer> neighbors = new ArrayList<>();
-        int top = current - sideSize;
-        if (top >= 0) {
-            neighbors.add(top);
-        }
-        int left = current - 1;
-        if (left % sideSize != sideSize - 1 && left >=0) {
-            neighbors.add(left);
-        }
-        int right = current + 1;
-        if (right % sideSize != 0 && right >=0) {
-            neighbors.add(right);
-        }
-        int bottom = current + sideSize;
-        if (bottom < size) {
-            neighbors.add(bottom);
-        }
-        return neighbors;
-    }
+//    private void setAllValues(TextView textView) {
+//        boolean status = getNextValue(textView); // Does the current one overflow?
+//        if (status == true) {
+//            //ArrayList<Integer> neighbors = findNeighbors(textView.getId());
+////            for (int n : neighbors) { // Check if each of the neighbors overflow
+////                setAllValues(textViews[n]); // Increase those and check their neighbors
+////            }
+////        }
+////        setNextValue(textView); // Increase current one
+//    }
+//
+//    private void setNextValue(TextView textView) {
+//        String current = textView.getText().toString();
+//        if (current.equals("2")) {
+//            textView.setText("0");
+//        } else {
+//            int total = ((Integer.parseInt(current) + 1) % 3);
+//            textView.setText(Integer.toString(total));
+//        }
+//    }
+//
+////    private ArrayList<Integer> hasDoubleOverflow(ArrayList<Integer> neighbors){
+////
+////        ArrayList<Integer> result = new ArrayList<>();
+////        ArrayList<Integer> overflowNeighbors = new ArrayList<>();
+////        for (int n : neighbors){
+////            if (textViews[n].getText().toString().equals("2")){
+////                overflowNeighbors.add(n);
+////            }
+////        }
+////        for (int n : overflowNeighbors){
+////            if (overflowNeighbors.contains(n + sideSize - 1) && n%sideSize != 1){
+////                result.add(n-1);
+////            }
+////            if (overflowNeighbors.contains(n + sideSize + 1)){
+////                result.add(n+1);
+////            }
+////
+////        }
+//
 }
