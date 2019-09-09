@@ -4,15 +4,25 @@ class Square {
     private boolean overflowed;
     private int value;
     private int id;
+    private int player;
 
     Square(int id) {
         this.value = 0;
         overflowed = false;
         this.id = id;
+        player = 0;
     }
 
     int getValue() {
         return value;
+    }
+
+    int getPlayer() {
+        return player;
+    }
+
+    void setPlayer(int id) {
+        player = id;
     }
 
     @Override

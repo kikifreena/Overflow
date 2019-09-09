@@ -6,11 +6,26 @@ public class Grid {
     private int size;
     private int itemCount;
     private ArrayList<Square> squares;
+    private int player;
 
     public Grid(int gridSize) {
         size = gridSize;
         itemCount = gridSize * gridSize;
+        player = 1;
         createGrid();
+    }
+
+    public int oneTurn(Square s){
+        increment(s, 0);
+        switch (player){
+            case 1:
+                player = 2;
+                break;
+            case 2:
+                player = 1;
+                break;
+        }
+        return player;
     }
 
     private void createGrid() {
@@ -24,17 +39,13 @@ public class Grid {
         return squares;
     }
 
-    public void increment(Square s){
-        increment(s, new ArrayList<Square>());
-    }
-
-    private void increment(Square s, ArrayList<Square> neighbors) {
+    private void increment(Square s, int depth) {
+        ArrayList<Square> neighbors = findNeighbors(s);
         s.increment();
-        System.out.println(s.toString() + s.getOverflowStatus());
-        if (s.getOverflowStatus()) {
+        s.setPlayer(player);
+        if (s.getOverflowStatus() && depth < itemCount) {
             for (Square square : neighbors) {
-                MainActivity.drawGrid();
-                increment(square, findNeighbors(square));
+                increment(square, depth + 1);
             }
         }
     }
