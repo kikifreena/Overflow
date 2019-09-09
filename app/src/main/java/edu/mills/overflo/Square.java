@@ -5,13 +5,13 @@ class Square {
     private int value;
     private int id;
 
-    public Square(int id) {
+    Square(int id) {
         this.value = 0;
         overflowed = false;
         this.id = id;
     }
 
-    public int getValue() {
+    int getValue() {
         return value;
     }
 
@@ -20,23 +20,22 @@ class Square {
         return "ID: " + id + " Val: " + value;
     }
 
-    public boolean getOverflowStatus() {
+    boolean getOverflowStatus() {
         return overflowed;
     }
 
-    public void overflowResolved(){
-        overflowed = false;
-    }
 
-    public int getId() {
+    int getId() {
         return id;
     }
 
-    public void increment() {
+    void increment() {
         value++;
         if (value > 2) {
-            value = value % 3;
+            value = 0;
             overflowed = true;
+        } else {
+            overflowed = false;
         }
     }
 }
